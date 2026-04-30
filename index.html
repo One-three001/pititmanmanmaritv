@@ -42,25 +42,28 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 10;
-  width: 110px;
-  font-weight: 900;
+  width: 90px;
+  font-weight: 600;
   font-size: 18px;
   clip-path: polygon(0 0, 85% 0, 100% 100%, 0% 100%);
+  flex-shrink: 0;
 }
+
 
 .weather-box {
   background: #1835db;
   height: 100%;
   display: flex;
   align-items: center;
-  padding: 0 15px;
+  padding: 0 10px;
   font-weight: 700;
-  font-size: 13px;
+  font-size: 12px;
   border-left: 2px solid #1569d6;
   z-index: 10;
-  min-width: 220px; 
+  width: 160px; /* Réduit de 220px à 160px */
   color: #ffcc00;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .weather-content {
@@ -70,9 +73,9 @@ body {
 }
 
 .weather-icon {
-  width: 24px;
-  height: 24px;
-  margin-right: 8px;
+  width: 22px;
+  height: 22px;
+  margin-right: 5px;
   filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
 }
 
@@ -88,8 +91,8 @@ body {
 #newsText {
   position: absolute;
   left: 20px;
-  font-size: 14px;
-  white-space: nowrap;
+  font-size: 12px;
+  white-space: nowrap; /* FORCE UNE SEULE LIGNE */
   opacity: 0;
   transform: translateY(10px);
   transition: all 0.6s ease;
@@ -128,7 +131,6 @@ body {
 const API_KEY = "e7a735f3ae4e43acbcf164503262904"; 
 const locations = [
     { city: "Port-au-Prince", label: "HAÏTI" },
-    /*{ city: "Bamako", label: "MALI" },*/
     { city: "London", label: "UK" },
     { city: "Miami", label: "USA" },
     { city: "Montreal", label: "CANADA" }
@@ -145,7 +147,7 @@ async function updateWeather() {
         setTimeout(() => {
             const currentTemp = data.current.temp_c;
             document.getElementById("temp").innerHTML = `
-                <span style="color:#aaa; font-size:10px; letter-spacing:1px;">${loc.city.toUpperCase()}</span> 
+                <span style="color:#aaa; font-size:9px;">${loc.city.toUpperCase()}</span> 
                 <span style="margin-left:5px; color:#ffcc00;">${Math.round(currentTemp)}°C</span>
             `;
             const icon = document.getElementById("wIcon");
@@ -162,8 +164,7 @@ updateWeather();
 // --- GESTION DES MESSAGES ---
 let fixedMessages = [
   "BIENVENUE SUR LA RADIO TÉLÉ PITIT MANMAN MARI TV",
-
-                  "🔴 ACTIVITÉ : Pou nou kontinye mete men nan konstriksyon mezon pou Pè yo.",
+ "🔴 ACTIVITÉ : Pou nou kontinye mete men nan konstriksyon mezon pou Pè yo.",
                   "Fondasyon Fanmi Pitit Manman Mari ap enfòme nou tout ke lap òganize yon gran raf entènasyonal.",
                   "Pri biyè raf la se 25$ ameriken pou moun ki lòtbò e 2500 gdes pou moun ki Ayiti.",
                   "Tiraj la ap fèt jou dimanch 31 mai 2026 la, pou fèt manman yo.",
@@ -185,7 +186,7 @@ let fixedMessages = [
 
 
                 "🔴 ACTIVITÉ: 17èm Konvansyon - Mouvman Karismatik Ayisyen nan Dyosèz PALM BEACH  ap fèt soti 10 JIYÈ RIVE  12 JIYÈ 2026.",
-                  "Sou Tèm nan : <<Vire do bay sa ki mal, fè byen; chèche lapè epi pouswiv li (Sòm 34:15).>>",
+                  "Sou Tèm nan : < Vire do bay sa ki mal, fè byen; chèche lapè epi pouswiv li (Sòm 34:15).>",
                   "GWO PREDIKATÈ YO AP LA :",
                   "Evèk Manuel de Jesús Rodríguez, Evèk Pierre André Dumas ",         
                   "Pè Frantzy Petit-Homme, Pè Patrick Bernard, CS,",
@@ -220,20 +221,17 @@ async function fetchLiveNews() {
     ];
 
     let autoNews = [];
-
     for (let source of sources) {
         try {
             const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(source.url)}&v=${Date.now()}`);
             const data = await res.json();
             if (data.items) {
-                // On prend 3 titres par thématique/pays
                 data.items.slice(0, 5).forEach(item => {
                     autoNews.push(`${source.name} : ${item.title.toUpperCase()}`);
                 });
             }
         } catch (e) { console.error("Erreur source: " + source.name); }
     }
-
     autoNews.sort(() => Math.random() - 0.5); 
     messages = [fixedMessages[0], ...autoNews, ...fixedMessages.slice(1)];
 }
@@ -252,7 +250,6 @@ function highlightText(text) {
         .replace(/(TECH|IA|ROBOT|ESPACE|INNOVATION)/gi, '<span class="highlight-cyan">$1</span>')
         .replace(/(PLANÈTE|ÉCOLOGIE|CLIMAT|ENVIRONNEMENT)/gi, '<span class="highlight-planet">$1</span>')
         .replace(/(ECONOMIE|ÉCONOMIE|FINANCE|BOURSE|INFLATION)/gi, '<span class="highlight-blue">$1</span>')
-        
         .replace(/(\d+[\$\sUSgdes]+)/gi, function(match) {
             if(match.includes('$') || match.includes('US') || match.includes('gdes')) {
                 return '<span class="highlight-green">' + match + '</span>';
@@ -296,10 +293,7 @@ function nextMessage() {
   }, 700);
 }
 
-// Actualisation toutes les 15 minutes
 setInterval(fetchLiveNews, 900000);
-
-// Rafraîchissement total de la page toutes les 60 min (Anti-doublons)
 setTimeout(() => { location.reload(); }, 3600000);
 
 fetchLiveNews().finally(() => {
