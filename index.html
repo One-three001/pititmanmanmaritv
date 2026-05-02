@@ -217,31 +217,45 @@ async function fetchLiveNews() {
         { name: "📈 ÉCONOMIE", url: "https://www.latribune.fr/rss/economie.xml" },
         { name: "💻 TECH", url: "https://www.futura-sciences.com/rss/tech.xml" },
         { name: "🌱 PLANÈTE", url: "https://www.lemonde.fr/planete/rss_full.xml" },
-        { name: "⚽ SPORT", url: "https://www.lequipe.fr/rss/actu_rss.xml" },
+        { name: "⚽ FOOT", url: "https://www.footmercato.net/feed/actualite" },
         { name: "🇭🇹 LE NOUVELLISTE", url: "https://lenouvelliste.com/rss.xml" },
-/*{ name: "🇭🇹 JUNO7", url: "https://juno7.ht/feed" },
-{ name: "🇭🇹 HAITI LIBRE", url: "https://www.haitilibre.com/rss-flash-en.php" },
-{ name: "🇭🇹 ICI HAITI", url: "https://www.icihaiti.com/rss-flash-en.php" },
-{ name: "🇭🇹 HAITI LIBERTÉ", url: "https://haitiliberte.com/feed" },
-{ name: "🇭🇹 REZO NÒDWÈS", url: "https://rezonodwes.com/?feed=rss2" },
-{ name: "🇭🇹 LE QUOTIDIEN 509", url: "https://lequotidien509.com/feed" },
-{ name: "🇭🇹 HAITIAN TIMES", url: "https://haitiantimes.com/feed" },
-{ name: "🇭🇹 HAITI24", url: "https://haiti24.net/feed" }*/
+        
+        { name: "⚽ FOOT MERCATO", url: "https://www.footmercato.net/feed/actualite" },
+        { name: "⚽ RMC SPORT", url: "https://rmcsport.bfmtv.com/rss/info/" },
+        { name: "⚽ EUROSPORT", url: "https://www.eurosport.fr/rss.xml" },
+        { name: "⚽ MAXIFOOT", url: "https://www.maxifoot.fr/rss.xml" },
+        { name: "⚽ SPORT.FR", url: "https://www.sport.fr/feed/" },
+        { name: "🇭🇹 LE QUOTIDIEN 509", url: "https://lequotidien509.com/feed" },
+        
+        /*{ name: "🇭🇹 HAITI LIBRE", url: "https://www.haitilibre.com/rss-flash-en.php" },*/
+        /*{ name: "🇭🇹 REZO NÒDWÈS", url: "https://rezonodwes.com/?feed=rss2" },
+        { name: "🇭🇹 HAITI LIBERTÉ", url: "https://haitiliberte.com/feed" },
+        { name: "🇭🇹 HAITIAN TIMES", url: "https://haitiantimes.com/feed" },
+        { name: "🇭🇹 HAITI24", url: "https://haiti24.net/feed" }*/
     ];
 
-    let autoNews = [];
+  let autoNews = [];
+
     for (let source of sources) {
         try {
+            // Utilisation de rss2json pour éviter les blocages constatés dans image_b28efa.png
             const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(source.url)}&v=${Date.now()}`);
             const data = await res.json();
             if (data.items) {
-                data.items.slice(0, 5).forEach(item => {
+                // On prend les 3 titres les plus récents par source
+                data.items.slice(0, 3).forEach(item => {
                     autoNews.push(`${source.name} : ${item.title.toUpperCase()}`);
                 });
             }
-        } catch (e) { console.error("Erreur source: " + source.name); }
+        } catch (e) { 
+            console.error("Erreur sur la source : " + source.name); 
+        }
     }
+
+    // Mélange les nouvelles pour ne pas avoir tout le sport d'un coup
     autoNews.sort(() => Math.random() - 0.5); 
+    
+    // Garde le message de bienvenue en premier, puis les news, puis vos activités fixes
     messages = [fixedMessages[0], ...autoNews, ...fixedMessages.slice(1)];
 }
 
