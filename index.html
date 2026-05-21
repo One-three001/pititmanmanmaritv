@@ -7,11 +7,12 @@
 body {
   margin: 0;
   background: transparent;
-  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   overflow: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Couleurs des mots-clés */
+/* --- Style & Couleurs des mots-clés --- */
 .highlight-red { color: #ff4d4d; text-transform: uppercase; font-weight: 800; }
 .highlight-yellow { color: #ffcc00; text-transform: uppercase; font-weight: 800; }
 .highlight-green { color: #2ecc71; font-weight: 800; }
@@ -21,6 +22,12 @@ body {
 .highlight-planet { color: #9dff00; text-transform: uppercase; font-weight: 800; }
 .highlight-war { color: #ff3333; font-weight: 900; text-decoration: underline; }
 
+/* Couleurs spécifiques pour les dates et informations clés */
+.highlight-date { color: #ff2d55; font-weight: 800; } 
+.highlight-phone { color: #06cc10; font-weight: 800; letter-spacing: 0.5px; } 
+.highlight-vip { color: #00f0ff; font-weight: 800; } 
+
+/* --- Structure du Design --- */
 .container {
   position: absolute;
   bottom: 0;
@@ -43,25 +50,27 @@ body {
   justify-content: center;
   z-index: 10;
   width: 90px;
-  font-weight: 600;
-  font-size: 18px;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 1px;
   clip-path: polygon(0 0, 85% 0, 100% 100%, 0% 100%);
   flex-shrink: 0;
 }
 
-
+/* --- NOUVEAU STYLE PREMIUM POUR LA METEO --- */
 .weather-box {
-  background: #1835db;
+  background: linear-gradient(135deg, #0a192f 0%, #056572 100%);
   height: 100%;
   display: flex;
   align-items: center;
-  padding: 0 10px;
+  padding: 0 12px;
   font-weight: 700;
-  font-size: 12px;
-  border-left: 2px solid #1569d6;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: inset 2px 0 10px rgba(0,0,0,0.3);
   z-index: 10;
-  width: 160px; /* Réduit de 220px à 160px */
-  color: #ffcc00;
+  width: 155px; 
   justify-content: center;
   flex-shrink: 0;
 }
@@ -70,13 +79,15 @@ body {
   display: flex;
   align-items: center;
   transition: opacity 0.4s ease-in-out;
+  width: 100%;
+  justify-content: space-between;
 }
 
 .weather-icon {
-  width: 22px;
-  height: 22px;
-  margin-right: 5px;
-  filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
+  width: 24px;
+  height: 24px;
+  margin-right: 2px;
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.6));
 }
 
 .text-area {
@@ -92,10 +103,12 @@ body {
   position: absolute;
   left: 20px;
   font-size: 12px;
-  white-space: nowrap; /* FORCE UNE SEULE LIGNE */
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  white-space: nowrap; 
   opacity: 0;
   transform: translateY(10px);
-  transition: all 0.6s ease;
+  transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 #newsText.active { opacity: 1; transform: translateY(0); }
@@ -105,7 +118,6 @@ body {
   0%, 15% { transform: translateX(0); }
   85%, 100% { transform: translateX(var(--scroll-dist)); }
 }
-
 .animate-scroll { animation: scrollLongText var(--duration) linear forwards; }
 </style>
 </head>
@@ -115,7 +127,7 @@ body {
   <div class="info-box">INFO</div>
   
   <div class="text-area" id="tickerZone">
-    <div id="newsText">Lancement du flux mondial (Haïti - Mali - UK - Monde)...</div>
+    <div id="newsText">LANCEMENT DU FLUX MONDIAL (HAÏTI - MALI - UK - MONDE)...</div>
   </div>
 
   <div class="weather-box">
@@ -147,8 +159,8 @@ async function updateWeather() {
         setTimeout(() => {
             const currentTemp = data.current.temp_c;
             document.getElementById("temp").innerHTML = `
-                <span style="color:#aaa; font-size:9px;">${loc.city.toUpperCase()}</span> 
-                <span style="margin-left:5px; color:#ffcc00;">${Math.round(currentTemp)}°C</span>
+                <span style="color: rgba(255,255,255,0.85); font-size: 10px; font-weight: 700; text-transform: uppercase;">${loc.city.toUpperCase()}</span> 
+                <span style="margin-left: 6px; color: #ffd32a; font-size: 12px; font-weight: 800;">${Math.round(currentTemp)}°C</span>
             `;
             const icon = document.getElementById("wIcon");
             icon.src = "https:" + data.current.condition.icon;
@@ -164,44 +176,29 @@ updateWeather();
 // --- GESTION DES MESSAGES ---
 let fixedMessages = [
   "BIENVENUE SUR LA RADIO TÉLÉ PITIT MANMAN MARI TV",
-"🔴 ACTIVITÉ : POU NOU KONTINYE METE MEN NAN KONSTRIKSYON MEZON POU PÈ YO.",
-                  "FONDASYON FANMI PITIT MANMAN MARI AP ENFÒME NOU TOUT KE LAP ÒGANIZE YON GRAN RAF ENTÈNASYONAL.",
-                  "PRI BIYÈ RAF LA SE 25$ AMERIKEN POU MOUN KI LÒTBÒ E 2500 GDES POU MOUN KI AYITI.",
-                  "TIRAJ LA AP FÈT JOU DIMANCH 31 MAI 2026 LA, POU FÈT MANMAN YO.",
-                  "1ER PRIX : 5000$ US | 2E PRIX : 3000$ US | 3E PRIX : 1000$ US | 4E AK 5E PRIX : 500$ US",
-                  "📞 RELE NOU NAN: 44977975 | 561 562 3369 | 3825 1745 | 3901 0184",
-
-                "🔴 ACTIVITÉ: DEPI 1E RIVE 31 ME 2026, CHAK MATEN A 6È, N'AP ANTRE NAN YON JOUNEN LAPRIYÈ AK: ",
-                  "LOUWANJ MARIAL – MOMAN LAPRIYÈ – LAMÈS – CHAPLÈ – JÈN – ADORASYON SEN SAKRÈMAN – CHAPLET DIVIN MIZÈRIKÒD – LAPRIYÈ ASWÈ.",
-                  "SOTI 13 POU RIVE 21 ME, N'AP SELEBRE YON NEVÈN ESPESYAL POU SENT RITA",
-                  "AVOKA TOUT KOZ KI SAN ESPWA. LAMÈS NEVÈN YO AP FÈT CHAK JOU A MIDI.",
-                  "JOU KAP 22 ME A, N'AP SELEBRE YON MÈS SPESYAL NAN OKAZYON FÈT SENT RITA.",
-                  " OU MENM KI TA RENMEN REKÒMANDE YON LAMÈS PANDAN TOUT MWA ME A, OSWA SI'W BEZWEN PLIS ENFÒMASYON, KONTAKTE NOU SOU YOUN NAN NIMEWO SA YO:",
-                  " 2817-1063 | 3901-0184 | 305-501-2222 | 305-390-2828 | 786-319-4040",
-
+  "🔴 ACTIVITÉ : POU NOU KONTINYE METE MEN NAN KONSTRIKSYON MEZON POU PÈ YO.",
+  "FONDASYON FANMI PITIT MANMAN MARI AP ENFÒME NOU TOUT KE LAP ÒGANIZE YON GRAN RAF ENTÈNASYONAL.",
+  "PRI BIYÈ RAF LA SE 25$ AMERIKEN POU MOUN KI LÒTBÒ E 2500 GDES POU MOUN KI AYITI.",
+  "TIRAJ LA AP FÈT JOU DIMANCH 31 MAI 2026 LA, POU FÈT MANMAN YO.",
+  "1ER PRIX : 5000$ US | 2E PRIX : 3000$ US | 3E PRIX : 1000$ US | 4E AK 5E PRIX : 500$ US",
+  "📞 RELE NOU NAN:  4497-7975 | 561-562-3369 | 3825-1745 | 3901-0184",
+  
+  "🔴 ACTIVITÉ: DEPI 1E RIVE 31 ME 2026, CHAK MATEN A 6È, N'AP ANTRE NAN YON JOUNEN LAPRIYÈ AK: LOUWANJ MARIAL – MOMAN LAPRIYÈ – LAMÈS – CHAPLÈ – JÈN – ADORASYON SEN SAKRÈMAN – CHAPLET DIVIN MIZÈRIKÒD – LAPRIYÈ ASWÈ.",
+  "SOTI 13 POU RIVE 21 ME, N'AP SELEBRE YON NEVÈN ESPESYAL POU SENT RITA, AVOKA TOUT KOZ KI SAN ESPWA. LAMÈS NEVÈN YO AP FÈT CHAK JOU A MIDI.",
+  "JOU KAP 22 ME A, N'AP SELEBRE YON MÈS SPESYAL NAN OKAZYON FÈT SENT RITA.",
+  "OU MENM KI TA RENMEN REKÒMANDE YON LAMÈS PANDAN TOUT MWA ME A, OSWA SI'W BEZWEN PLIS ENFÒMASYON, KONTANTE NOU SOU YOUN NAN NIMÈWO SA YO: 2817-1063 | 3901-0184 | 305-501-2222 | 305-390-2828 | 786-319-4040",
+  
+  "🔴 ACTIVITÉ: NAN SÈLMAN 2 MWA, GWO RANDEVOU ESPIRITYÈL LA AP RIVE. PÈLERINAJ ENTÈNASYONAL BREZIL - SOTI 29 JEN POU RIVE 9 JIYÈ 2026, NAN PYE VYÈJ NWA A, MANMAN APARECIDA.",
+  "RELE NAN NIMEWO SA YO POU W PATISIPE AVÈK NOU: 4497-7975 | 3901-0184 | 561-562-3369 | 305-390-2828 | 3825-1745",
  
-                "🔴 ACTIVITÉ: NAN SÈLMAN 2 MWA, GWO RANDEVOU ESPIRITYÈL LA AP RIVE ",
-                  "PÈLERINAJ ENTÈNASYONAL BREZIL - SOTI 29 JEN POU RIVE 9 JIYÈ 2026, NAN PYE VYÈJ NWA A, MANMAN APARECIDA.",
-                  "RELE NAN NIMEWO SA YO POU W PATISIPE AVÈK NOU. 44977975 | 3901-0184 | 561 562 3369 | 305-390-2828 | 38251745",
-
-
-                "🔴 ACTIVITÉ: 17ÈM KONVANSYON - MOUVMAN KARISMATIK AYISYEN NAN DYOSÈZ PALM BEACH  AP FÈT SOTI 10 JIYÈ RIVE  12 JIYÈ 2026.",
-                  "SOU TÈM NAN : < VIRE DO BAY SA KI MAL, FÈ BYEN; CHÈCHE LAPÈ EPI POUSWIV LI (SÒM 34:15).>",
-                  "GWO PREDIKATÈ YO AP LA :",
-                  "EVÈK MANUEL DE JESÚS RODRÍGUEZ, EVÈK PIERRE ANDRÉ DUMAS ",         
-                  "PÈ FRANTZY PETIT-HOMME, PÈ PATRICK BERNARD, CS,",
-                  "PÈ YVES GEFFRARD, AK DYAK JOB CASIMIR.",
-                  "ANIMASYON : CARLENS BRUNY FRÈ GIGI, BIJOU JEAN, SIVA CHARLOT, AK CHORALE NOTRE DAME.",
-                 " ORÈ YO : VANDREDI 6È POU 10È ASWÈ | SAMDI 10È DIMATEN POU 10È ASWÈ ",
-                 "DIMANCH 9È DIMATEN POU 3È APRÈMIDI",
-                 "LOKAL LA : SAINT JOHN PAUL II ACADEMY, 4001 N. MILITARY TRAIL, BOCA RATON, FL.",
-                 "POU PLIS ENFÒMASYON, RELE PÈ YVES NAN: 772 971 9080.",
-
-                "🔴 ACTIVITÉ: SOTI 18 POU RIVE 26 JEN - NEVÈN NOTRE DAME DU PERPÉTUEL SECOURS | PAWAS ST JÉRÔME NAN BROOKLYN ",
-                  "SOU TÈM : << AK MANMAN PEPETYÈL, MIRAK LA PRAL FÈT POU AYITI.>> ",
-                 " PREDIKATÈ PRENSIPAL : PÈ FRANTZY PETIT-HOMME",
-                 "DIMANCH 27 JEN, N AP SELEBRE GRAN FÈT NOTRE DAME DU PERPÉTUEL SECOURS NAN KATEDRAL BROOKLYN.",
-
+  "🔴 ACTIVITÉ: 17ÈM KONVANSYON - MOUVMAN KARISMATIK AYISYEN NAN DYOSÈZ PALM BEACH AP FÈT SOTI 10 JIYÈ RIVE 12 JIYÈ 2026. SOU TÈM NAN : < VIRE DO BAY SA KI MAL, FÈ BYEN; CHÈCHE LAPÈ EPI POUSWIV LI (SÒM 34:15).>",
+  "GWO PREDIKATÈ YO AP LA : EVÈK MANUEL DE JESÚS RODRÍGUEZ, EVÈK PIERRE ANDRÉ DUMAS, PÈ FRANTZY PETIT-HOMME, PÈ PATRICK BERNARD, CS, PÈ YVES GEFFRARD, AK DYAK JOB CASIMIR.",
+  "ANIMASYON : CARLENS BRUNY FRÈ GIGI, BIJOU JEAN, SIVA CHARLOT, AK CHORALE NOTRE DAME.",
+  "ORÈ YO : VANDREDI 6È POU 10È ASWÈ | SAMDI 10È DIMATEN POU 10È ASWÈ | DIMANCH 9È DIMATEN POU 3È APRÈMIDI",
+  "LOKAL LA : SAINT JOHN PAUL II ACADEMY, 4001 N. MILITARY TRAIL, BOCA RATON, FL. POU PLIS ENFÒMASYON, RELE PÈ YVES NAN: 772-971-9080.",
+  
+  "🔴 ACTIVITÉ: SOTI 18 POU RIVE 26 JEN - NEVÈN NOTRE DAME DU PERPÉTUEL SECOURS | PAWAS ST JÉRÔME NAN BROOKLYN. SOU TÈM : << AK MANMAN PEPETYÈL, MIRAK LA PRAL FÈT POU AYITI. >>",
+  "PREDIKATÈ PRENSIPAL : PÈ FRANTZY PETIT-HOMME. DIMANCH 27 JEN, N AP SELEBRE GRAN FÈT NOTRE DAME DU PERPÉTUEL SECOURS NAN KATEDRAL BROOKLYN.",
   "ABONNEZ-VOUS | PARTAGEZ | COMMENTEZ | AIMEZ"
 ];
 
@@ -219,7 +216,6 @@ async function fetchLiveNews() {
         { name: "🌱 PLANÈTE", url: "https://www.lemonde.fr/planete/rss_full.xml" },
         { name: "⚽ FOOT", url: "https://www.footmercato.net/feed/actualite" },
         { name: "🇭🇹 LE NOUVELLISTE", url: "https://lenouvelliste.com/rss.xml" },
-        
         { name: "⚽ FOOT MERCATO", url: "https://www.footmercato.net/feed/actualite" },
         { name: "⚽ RMC SPORT", url: "https://rmcsport.bfmtv.com/rss/info/" },
         { name: "⚽ EUROSPORT", url: "https://www.eurosport.fr/rss.xml" },
@@ -227,23 +223,14 @@ async function fetchLiveNews() {
         { name: "⚽ SPORT.FR", url: "https://www.sport.fr/feed/" },
         { name: "🇭🇹 LE QUOTIDIEN 509", url: "https://lequotidien509.com/feed" },
         { name: "🌍 RFI", url: "https://www.rfi.fr/fr/rss" }
-        
-        /*{ name: "🇭🇹 HAITI LIBRE", url: "https://www.haitilibre.com/rss-flash-en.php" },*/
-        /*{ name: "🇭🇹 REZO NÒDWÈS", url: "https://rezonodwes.com/?feed=rss2" },
-        { name: "🇭🇹 HAITI LIBERTÉ", url: "https://haitiliberte.com/feed" },
-        { name: "🇭🇹 HAITIAN TIMES", url: "https://haitiantimes.com/feed" },
-        { name: "🇭🇹 HAITI24", url: "https://haiti24.net/feed" }*/
     ];
 
-  let autoNews = [];
-
+    let autoNews = [];
     for (let source of sources) {
         try {
-            // Utilisation de rss2json pour éviter les blocages constatés dans image_b28efa.png
             const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(source.url)}&v=${Date.now()}`);
             const data = await res.json();
             if (data.items) {
-                // On prend les 3 titres les plus récents par source
                 data.items.slice(0, 3).forEach(item => {
                     autoNews.push(`${source.name} : ${item.title.toUpperCase()}`);
                 });
@@ -253,10 +240,7 @@ async function fetchLiveNews() {
         }
     }
 
-    // Mélange les nouvelles pour ne pas avoir tout le sport d'un coup
     autoNews.sort(() => Math.random() - 0.5); 
-    
-    // Garde le message de bienvenue en premier, puis les news, puis vos activités fixes
     messages = [fixedMessages[0], ...autoNews, ...fixedMessages.slice(1)];
 }
 
@@ -266,21 +250,18 @@ const tickerZone = document.getElementById("tickerZone");
 
 function highlightText(text) {
     return text
+        .replace(/(\b\d{4}[-\s]?\d{4}\b|\b\d{3}[-\s]?\d{3}[-\s]?\d{4}\b)/g, '<span class="highlight-phone">$1</span>')
         .replace(/(Fondasyon Fanmi Pitit Manman Mari)/gi, '<span class="highlight-blue">$1</span>')
-        .replace(/(HAITI|HAÏTI|MALI|UK|UK|ROYAUME-UNI|ACTIVITÉ|🔴 ACTUALITÉS|LIVE|URGENT)/gi, '<span class="highlight-red">$1</span>')
+        .replace(/(HAITI|HAÏTI|MALI|UK|ROYAUME-UNI|ACTIVITÉ|🔴 ACTUALITÉS|LIVE|URGENT)/gi, '<span class="highlight-red">$1</span>')
         .replace(/(GUERRE|CONFLIT|ATTAQUE|MORT|TUÉS|BOMBARDEMENT|SÉISME)/gi, '<span class="highlight-war">$1</span>')
         .replace(/(INTERNATIONALE|EGLISE|ÉGLISE|VATICAN|PAPE)/gi, '<span class="highlight-yellow">$1</span>')
         .replace(/(SPORT|MATCH|FOOTBALL|VICTOIRE|LIGUE|CHAMPIONS)/gi, '<span class="highlight-orange">$1</span>')
         .replace(/(TECH|IA|ROBOT|ESPACE|INNOVATION)/gi, '<span class="highlight-cyan">$1</span>')
         .replace(/(PLANÈTE|ÉCOLOGIE|CLIMAT|ENVIRONNEMENT)/gi, '<span class="highlight-planet">$1</span>')
         .replace(/(ECONOMIE|ÉCONOMIE|FINANCE|BOURSE|INFLATION)/gi, '<span class="highlight-blue">$1</span>')
-        .replace(/(\d+[\$\sUSgdes]+)/gi, function(match) {
-            if(match.includes('$') || match.includes('US') || match.includes('gdes')) {
-                return '<span class="highlight-green">' + match + '</span>';
-            }
-            return match;
-        })
-        .replace(/(31 mai 2026)/gi, '<span class="highlight-yellow">$1</span>');
+        .replace(/(\d+[\$\sUSGdesgdes]+)/g, '<span class="highlight-green">$1</span>')
+        .replace(/(\d+\s+(MAI|ME|JEN|JIYÈ|JUIN|JUILLET)(\s+\d+)?|JOU\s+DIMANCH\s+31\s+MAI\s+2026\s+LA|SOTI\s+\d+\s+POU\s+RIVE\s+\d+\s+ME|22\s+ME|29\s+JEN\s+POU\s+RIVE\s+9\s+JIYÈ\s+2026|10\s+JIYÈ\s+RIVE\s+12\s+JIYÈ\s+2026|18\s+POU\s+RIVE\s+26\s+JEN|DIMANCH\s+27\s+JEN)/gi, '<span class="highlight-date">$1</span>')
+        .replace(/(EVÈK MANUEL DE JESÚS RODRÍGUEZ|EVÈK PIERRE ANDRÉ DUMAS|PÈ FRANTZY PETIT-HOMME|PÈ PATRICK BERNARD|PÈ YVES GEFFRARD|DYAK JOB CASIMIR|SAINT JOHN PAUL II ACADEMY|PAWAS ST JÉRÔME|KATEDRAL BROOKLYN|CARLENS BRUNY FRÈ GIGI|BIJOU JEAN|SIVA CHARLOT|CHORALE NOTRE DAME)/gi, '<span class="highlight-vip">$1</span>');
 }
 
 function startNewsCycle() {
@@ -294,9 +275,10 @@ function startNewsCycle() {
     setTimeout(() => {
       const zoneWidth = tickerZone.offsetWidth - 40;
       const textWidth = newsText.scrollWidth;
+      
       if (textWidth > zoneWidth) {
         const diff = zoneWidth - textWidth - 50;
-        const totalDuration = Math.max(Math.abs(diff) / 45, 6); 
+        const totalDuration = Math.max(Math.abs(diff) / 30, 9); 
         newsText.style.setProperty('--scroll-dist', `${diff}px`);
         newsText.style.setProperty('--duration', `${totalDuration}s`);
         newsText.classList.add("animate-scroll");
